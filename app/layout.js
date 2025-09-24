@@ -18,11 +18,11 @@ export const metadata = {
   openGraph: {
     title: "PyCode - Online Python Editor",
     description: "Beautiful online Python code editor with dark/light mode support",
-    url: "https://pycode.vercel.app",
+    url: "https://pycodefree.vercel.app",
     siteName: "PyCode",
     images: [
       {
-        url: "https://pycode.vercel.app/og-image.png",
+        url: "https://pycodefree.vercel.app/og-image.png",
         width: 1200,
         height: 630,
         alt: "PyCode - Online Python Editor",
