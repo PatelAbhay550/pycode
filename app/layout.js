@@ -14,37 +14,37 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata = {
-  title: "PyLearn - Learn Python Programming Online | Interactive Python Course",
+  title: "Pycode - Learn Python Programming Online | Interactive Python Course",
   description: "Master Python programming with interactive lessons, quizzes, and hands-on practice. Learn coding step by step with gamified exercises. Start your Python journey today - completely free!",
   keywords: ["python", "learn python", "programming", "coding", "interactive lessons", "python tutorial", "coding practice", "programming education", "python course", "beginner python", "python exercises", "online coding", "programming bootcamp"],
   viewport: "width=device-width, initial-scale=1",
   robots: "index, follow",
-  author: "PyLearn Team",
+  author: "Pycode Team",
   category: "education",
   
   openGraph: {
-    title: "PyLearn - Learn Python Programming Online | Interactive Python Course",
+    title: "Pycode - Learn Python Programming Online | Interactive Python Course",
     description: "Master Python programming with interactive lessons, quizzes, and hands-on practice. Learn coding step by step with gamified exercises.",
-    url: "https://pylearn.vercel.app",
-    siteName: "PyLearn",
+    url: "https://Pycode.vercel.app",
+    siteName: "Pycode",
     locale: "en_US",
     type: "website",
     images: [
       {
-        url: "https://pylearn.vercel.app/og-image.png",
+        url: "https://pycode.vercel.app/og-image.png",
         width: 1200,
         height: 630,
-        alt: "PyLearn - Interactive Python Learning Platform",
+        alt: "Pycode - Interactive Python Learning Platform",
       },
     ],
   },
   
   twitter: {
     card: "summary_large_image",
-    title: "PyLearn - Learn Python Programming Online",
+    title: "Pycode - Learn Python Programming Online",
     description: "Master Python programming with interactive lessons, quizzes, and hands-on practice. Learn coding step by step with gamified exercises.",
-    images: ["https://pylearn.vercel.app/og-image.png"],
-    creator: "@pylearn_app",
+    images: ["https://Pycode.vercel.app/og-image.png"],
+    creator: "@Pycode_app",
   },
   
   robots: {
@@ -60,7 +60,7 @@ export const metadata = {
   },
   
   alternates: {
-    canonical: "https://pylearn.vercel.app",
+    canonical: "https://Pycode.vercel.app",
   },
   
   icons: {
@@ -81,8 +81,11 @@ export default function RootLayout({ children }) {
         <AuthProvider>
           <div className="flex h-screen">
             <Navigation />
-            <main className="flex-1 lg:ml-64 pb-16 lg:pb-0 overflow-auto">
-              {children}
+            <main className="flex-1 lg:ml-64 overflow-auto">
+              <div className="lg:hidden h-16"></div> {/* Spacer for mobile top nav */}
+              <div className="pb-16 lg:pb-0"> {/* Bottom padding for mobile bottom nav */}
+                {children}
+              </div>
             </main>
           </div>
         </AuthProvider>
