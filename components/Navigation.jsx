@@ -41,8 +41,9 @@ export default function Navigation() {
 
   return (
     <>
-      {/* Desktop Navigation */}
-      <nav className="hidden lg:flex lg:flex-col lg:fixed lg:inset-y-0 lg:w-64 lg:bg-white lg:dark:bg-gray-900 lg:border-r lg:border-gray-200 lg:dark:border-gray-700">
+      {/* Desktop Navigation - Completely hidden on mobile */}
+      <div className="hidden lg:block">
+        <nav className="flex flex-col fixed inset-y-0 w-64 bg-white dark:bg-gray-900 border-r border-gray-200 dark:border-gray-700 z-40">
         <div className="flex-1 flex flex-col min-h-0">
           {/* Logo */}
           <div className="flex items-center h-16 flex-shrink-0 px-4 border-b border-gray-200 dark:border-gray-700">
@@ -186,10 +187,11 @@ export default function Navigation() {
             <ThemeToggle />
           </div>
         </div>
-      </nav>
+        </nav>
+      </div>
 
       {/* Mobile Top Navigation */}
-      <div className="lg:hidden">
+      <div className="hidden lg:block">
         <div className="bg-white dark:bg-gray-900 shadow-sm border-b border-gray-200 dark:border-gray-700">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex justify-between items-center h-16">
