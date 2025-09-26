@@ -25,13 +25,13 @@ export const metadata = {
   openGraph: {
     title: "Pycode - Learn Python Programming Online | Interactive Python Course",
     description: "Master Python programming with interactive lessons, quizzes, and hands-on practice. Learn coding step by step with gamified exercises.",
-    url: "https://Pycode.vercel.app",
+    url: "https://Pycodefree.vercel.app",
     siteName: "Pycode",
     locale: "en_US",
     type: "website",
     images: [
       {
-        url: "https://pycode.vercel.app/og-image.png",
+        url: "https://pycodefree.vercel.app/og-image.png",
         width: 1200,
         height: 630,
         alt: "Pycode - Interactive Python Learning Platform",
@@ -43,7 +43,7 @@ export const metadata = {
     card: "summary_large_image",
     title: "Pycode - Learn Python Programming Online",
     description: "Master Python programming with interactive lessons, quizzes, and hands-on practice. Learn coding step by step with gamified exercises.",
-    images: ["https://Pycode.vercel.app/og-image.png"],
+    images: ["https://pycodefree.vercel.app/og-image.png"],
     creator: "@Pycode_app",
   },
   
@@ -60,7 +60,7 @@ export const metadata = {
   },
   
   alternates: {
-    canonical: "https://Pycode.vercel.app",
+    canonical: "https://pycodefree.vercel.app",
   },
   
   icons: {
