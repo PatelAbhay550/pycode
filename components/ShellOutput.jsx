@@ -1,13 +1,25 @@
 'use client'
 
+import { useState } from 'react'
+
 export default function ShellOutput({ 
   stdout, 
   stderr, 
   isLoading, 
   hasOutput,
-  onClear 
+  onClear,
+  onSendInput   // 👈 new prop for interactive input
 }) {
+  const [command, setCommand] = useState('')
   const hasError = stderr && stderr.trim()
+
+  const handleSubmit = (e) => {
+    e.preventDefault()
+    if (command.trim()) {
+      onSendInput(command + '\n')   // send to Python runtime
+      setCommand('')
+    }
+  }
 
   return (
     <div className="flex flex-col">
@@ -33,9 +45,9 @@ export default function ShellOutput({
         </div>
 
         {/* Shell Content */}
-        <div className="h-80 lg:h-96 overflow-auto">
+        <div className="h-80 lg:h-96 overflow-auto flex flex-col">
           {hasOutput ? (
-            <div className="p-4 space-y-4">
+            <div className="p-4 space-y-4 flex-1 overflow-y-auto">
               {/* Success Output */}
               {stdout && (
                 <div>
@@ -67,7 +79,7 @@ export default function ShellOutput({
               )}
             </div>
           ) : (
-            <div className="h-full flex items-center justify-center text-gray-500 dark:text-gray-400">
+            <div className="flex-1 flex items-center justify-center text-gray-500 dark:text-gray-400">
               <div className="text-center">
                 <svg className="w-12 h-12 mx-auto mb-4 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M8 9l3 3-3 3m5 0h3"/>
@@ -77,6 +89,20 @@ export default function ShellOutput({
                 </p>
               </div>
             </div>
+          )}
+
+          {/* Interactive Input */}
+          {hasOutput && (
+            <form onSubmit={handleSubmit} className="border-t border-gray-200 dark:border-gray-700 flex items-center px-3 py-2">
+              <span className="text-xs text-gray-500 dark:text-gray-400 mr-2">▶</span>
+              <input
+                type="text"
+                value={command}
+                onChange={(e) => setCommand(e.target.value)}
+                placeholder="Type input here..."
+                className="flex-1 bg-transparent text-sm font-mono text-gray-800 dark:text-gray-200 focus:outline-none"
+              />
+            </form>
           )}
         </div>
       </div>
