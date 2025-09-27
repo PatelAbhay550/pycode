@@ -9,7 +9,7 @@ export default function CodeEditor() {
   const [input, setInput] = useState('# Welcome to PyCode!\n# Write your Python code here and click Run\n\nprint("Hello, World!")\nprint("🐍 Happy coding!")')
 
   // Use the usePython hook to run code and access both stdout and stderr
-  const { runPython, stdout, stderr, isLoading, isRunning } = usePython()
+  const { runPython, stdout, stderr, isLoading, sendInput, isRunning } = usePython()
 
   const hasOutput = stdout || stderr
 
@@ -65,8 +65,10 @@ export default function CodeEditor() {
           isLoading={isLoading}
           hasOutput={hasOutput}
           onClear={handleClear}
+          onSendInput={sendInput}
         />
       </div>
     </div>
   )
+
 }
