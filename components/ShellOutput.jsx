@@ -1,110 +1,98 @@
-'use client'
+"use client"
 
-import { useState } from 'react'
+import { useState, useEffect, useRef } from "react"
 
-export default function ShellOutput({ 
-  stdout, 
-  stderr, 
-  isLoading, 
-  hasOutput,
-  onClear,
-  onSendInput   // 👈 new prop for interactive input
-}) {
-  const [command, setCommand] = useState('')
-  const hasError = stderr && stderr.trim()
+export default function ShellOutput({ stdout, stderr, onSendInput, requestInput }) {
+  const [command, setCommand] = useState("")
+  const [history, setHistory] = useState([])
+  const [historyIndex, setHistoryIndex] = useState(-1)
+  const [showInput, setShowInput] = useState(false)
+  const outputRef = useRef(null)
 
+  // Auto-scroll when stdout/stderr changes
+  useEffect(() => {
+    if (outputRef.current) {
+      outputRef.current.scrollTop = outputRef.current.scrollHeight
+    }
+
+    // Show input if requested
+    if (requestInput) {
+      setShowInput(true)
+    }
+  }, [stdout, stderr, requestInput])
+
+  // Handle ↑ and ↓ for command history
+  const handleKeyDown = (e) => {
+    if (e.key === "ArrowUp") {
+      e.preventDefault()
+      if (history.length > 0) {
+        const newIndex =
+          historyIndex === -1
+            ? history.length - 1
+            : Math.max(0, historyIndex - 1)
+        setHistoryIndex(newIndex)
+        setCommand(history[newIndex])
+      }
+    }
+    if (e.key === "ArrowDown") {
+      e.preventDefault()
+      if (history.length > 0) {
+        const newIndex =
+          historyIndex === -1 || historyIndex === history.length - 1
+            ? -1
+            : historyIndex + 1
+        setHistoryIndex(newIndex)
+        setCommand(newIndex === -1 ? "" : history[newIndex])
+      }
+    }
+  }
+
+  // Handle input submit
   const handleSubmit = (e) => {
     e.preventDefault()
     if (command.trim()) {
-      onSendInput(command + '\n')   // send to Python runtime
-      setCommand('')
+      onSendInput(command + "\n") // Send to Python runtime
+      setHistory([...history, command])
+      setHistoryIndex(-1)
+      setCommand("")
+      setShowInput(false) // Hide input after submission
     }
   }
 
   return (
-    <div className="flex flex-col">
-      <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm overflow-hidden h-full">
-        {/* Shell Header */}
-        <div className="bg-gray-50 dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700 px-4 py-3 flex items-center justify-between">
-          <div className="flex items-center space-x-3">
-            <div className="flex space-x-2">
-              <div className="w-3 h-3 bg-red-400 rounded-full"></div>
-              <div className="w-3 h-3 bg-yellow-400 rounded-full"></div>
-              <div className="w-3 h-3 bg-green-400 rounded-full"></div>
-            </div>
-            <span className="text-sm font-medium text-gray-600 dark:text-gray-300">Shell Output</span>
-          </div>
-          {hasOutput && (
-            <button
-              onClick={onClear}
-              className="text-xs text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
-            >
-              Clear
-            </button>
-          )}
-        </div>
+    <div className="w-full h-[500px] bg-gray-900 text-white rounded-lg shadow-md flex flex-col font-mono text-sm">
+      {/* Output window */}
+      <div
+        ref={outputRef}
+        className="p-4 space-y-4 flex-1 overflow-y-auto"
+      >
+        {/* Stdout */}
+        {stdout && (
+          <pre className="whitespace-pre-wrap text-green-400">{stdout}</pre>
+        )}
 
-        {/* Shell Content */}
-        <div className="h-80 lg:h-96 overflow-auto flex flex-col">
-          {hasOutput ? (
-            <div className="p-4 space-y-4 flex-1 overflow-y-auto">
-              {/* Success Output */}
-              {stdout && (
-                <div>
-                  <div className="flex items-center space-x-2 mb-2">
-                    <svg className="w-4 h-4 text-green-500" fill="currentColor" viewBox="0 0 24 24">
-                      <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                    </svg>
-                    <span className="text-sm font-medium text-green-600 dark:text-green-400">Output</span>
-                  </div>
-                  <pre className="font-mono text-sm text-gray-900 dark:text-gray-100 whitespace-pre-wrap leading-relaxed p-3 rounded">
-                    {stdout}
-                  </pre>
-                </div>
-              )}
+        {/* Stderr */}
+        {stderr && (
+          <pre className="whitespace-pre-wrap text-red-400 border-l-2 border-red-500 pl-2">
+            {stderr}
+          </pre>
+        )}
 
-              {/* Error Output */}
-              {hasError && (
-                <div>
-                  <div className="flex items-center space-x-2 mb-2">
-                    <svg className="w-4 h-4 text-red-500" fill="currentColor" viewBox="0 0 24 24">
-                      <path d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
-                    </svg>
-                    <span className="text-sm font-medium text-red-600 dark:text-red-400">Error</span>
-                  </div>
-                  <pre className="font-mono text-sm text-red-700 dark:text-red-300 whitespace-pre-wrap leading-relaxed bg-red-50 dark:bg-red-900/20 p-3 rounded border-l-4 border-red-500">
-                    {stderr}
-                  </pre>
-                </div>
-              )}
-            </div>
-          ) : (
-            <div className="flex-1 flex items-center justify-center text-gray-500 dark:text-gray-400">
-              <div className="text-center">
-                <svg className="w-12 h-12 mx-auto mb-4 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M8 9l3 3-3 3m5 0h3"/>
-                </svg>
-                <p className="text-sm">
-                  {isLoading ? 'Initializing Python environment...' : 'Run your code to see output here'}
-                </p>
-              </div>
-            </div>
-          )}
-
-          {/* Interactive Input */}
-          {hasOutput && (
-            <form onSubmit={handleSubmit} className="border-t border-gray-200 dark:border-gray-700 flex items-center px-3 py-2">
-              <span className="text-xs text-gray-500 dark:text-gray-400 mr-2">▶</span>
-              <input
-                type="text"
-                value={command}
-                onChange={(e) => setCommand(e.target.value)}
-                placeholder="Type input here..."
-                className="flex-1 bg-transparent text-sm font-mono text-gray-800 dark:text-gray-200 focus:outline-none"
-              />
-            </form>
-          )}
-        </div>
+        {/* Inline input */}
+        {showInput && (
+          <form onSubmit={handleSubmit} className="flex items-center mt-2">
+            <span className="text-green-400 mr-2">>>> </span>
+            <input
+              autoFocus
+              type="text"
+              value={command}
+              onChange={(e) => setCommand(e.target.value)}
+              onKeyDown={handleKeyDown}
+              className="bg-transparent text-gray-200 flex-1 focus:outline-none"
+              placeholder="Type input..."
+            />
+          </form>
+        )}
       </div>
     </div>
   )
